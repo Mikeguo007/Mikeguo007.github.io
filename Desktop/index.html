@@ -14,7 +14,7 @@
         }
 
         body {
-            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #1a2a6c);
+            background: linear-gradient(135deg, #87CEFA, #FFFFFF);
             background-size: 400% 400%;
             animation: gradientBG 15s ease infinite;
             color: #fff;
@@ -33,7 +33,6 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* 欢迎页面样式 */
         .welcome-page {
             position: absolute;
             top: 0;
@@ -94,7 +93,23 @@
             box-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
         }
 
-        /* 主容器 */
+        .enter-btn::after {
+            content: '↓';
+            display: block;
+            font-size: 2rem;
+            margin-top: 20px;
+            animation: bounce 1s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(10px);
+            }
+        }
+
         .container {
             width: 100%;
             max-width: 900px;
@@ -124,46 +139,9 @@
             letter-spacing: 2px;
         }
 
-        .layout-controls {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            display: flex;
-            gap: 10px;
-        }
-
-        .layout-btn {
-            background: rgba(255, 255, 255, 0.1);
-            border: none;
-            color: white;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1rem;
-        }
-
-        .layout-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: scale(1.1);
-        }
-
-        .layout-btn.active {
-            background: linear-gradient(to right, #ff0080, #7928ca);
-        }
-
         .player-container {
             padding: 20px;
             transition: all 0.5s ease;
-        }
-
-        /* 上下布局（默认） */
-        .layout-vertical .player-content {
-            display: block;
         }
 
         .cover-container {
@@ -205,150 +183,6 @@
             object-fit: cover;
         }
 
-        .song-info {
-            text-align: center;
-            margin-bottom: 25px;
-        }
-
-        .song-title {
-            font-size: 1.8rem;
-            margin-bottom: 5px;
-            color: #ffffff;
-        }
-
-        .song-artist {
-            font-size: 1.2rem;
-            color: #b3b3b3;
-        }
-
-        .progress-container {
-            width: 100%;
-            height: 8px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            margin: 25px 0;
-            cursor: pointer;
-            position: relative;
-        }
-
-        .progress {
-            height: 100%;
-            width: 0;
-            background: linear-gradient(to right, #ff0080, #7928ca);
-            border-radius: 10px;
-            position: relative;
-            transition: width 0.1s linear;
-        }
-
-        .time-container {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 5px;
-            font-size: 0.9rem;
-            color: #b3b3b3;
-        }
-
-        .controls {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 25px;
-            margin: 20px 0;
-        }
-
-        .control-btn {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: none;
-            color: white;
-            font-size: 1.2rem;
-        }
-
-        .control-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: scale(1.1);
-        }
-
-        .control-btn.play-pause {
-            width: 70px;
-            height: 70px;
-            background: linear-gradient(to right, #ff0080, #7928ca);
-            font-size: 1.8rem;
-        }
-
-        .volume-container {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: 15px;
-            justify-content: center;
-        }
-
-        .volume-slider {
-            width: 120px;
-            -webkit-appearance: none;
-            height: 6px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 5px;
-            outline: none;
-        }
-
-        .volume-slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            background: #fff;
-            cursor: pointer;
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
-        }
-
-        .lyrics-section {
-            transition: all 0.5s ease;
-        }
-
-        .lyrics-container {
-            height: 200px;
-            overflow: hidden;
-            position: relative;
-            margin: 30px 0;
-            border-radius: 10px;
-            background: rgba(0, 0, 0, 0.3);
-            padding: 15px;
-        }
-
-        .lyrics {
-            text-align: center;
-            transition: transform 0.5s ease;
-        }
-
-        .lyric-line {
-            padding: 8px 0;
-            font-size: 1.2rem;
-            color: rgba(255, 255, 255, 0.7);
-            transition: all 0.3s ease;
-            min-height: 30px;
-            cursor: pointer;
-        }
-
-        .lyric-line:hover {
-            color: rgba(255, 255, 255, 0.9);
-        }
-
-        .lyric-line.active {
-            color: #fff;
-            font-size: 1.4rem;
-            font-weight: bold;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-        }
-
         footer {
             text-align: center;
             padding: 20px;
@@ -359,6 +193,7 @@
     </style>
 </head>
 <body>
+    <!-- 欢迎页面 -->
     <div class="welcome-page" id="welcomePage">
         <div class="welcome-content">
             <div class="welcome-title">撒马尔罕乌鸣</div>
@@ -370,65 +205,18 @@
         </div>
     </div>
 
+    <!-- 主播放器容器 -->
     <div class="container layout-vertical" id="playerContainer">
         <header>
             <h1>撒马尔罕乌鸣</h1>
-            <div class="layout-controls">
-                <button class="layout-btn active" data-layout="vertical" title="上下布局">
-                    <i class="fas fa-align-center"></i>
-                </button>
-                <button class="layout-btn" data-layout="horizontal" title="左右布局">
-                    <i class="fas fa-columns"></i>
-                </button>
-            </div>
         </header>
 
         <div class="player-container">
-            <div class="player-content">
-                <div class="cover-container" id="coverContainer">
-                    <div class="cover" id="albumCover">
-                        <img src="images/cover1.jpg" alt="Album Cover">
-                    </div>
-                </div>
-
-                <div class="lyrics-section" id="lyricsSection">
-                    <div class="song-info">
-                        <h2 class="song-title" id="songTitle">撒马尔罕乌鸣</h2>
-                        <p class="song-artist" id="songArtist">麦某</p>
-                    </div>
-
-                    <div class="progress-container" id="progressContainer">
-                        <div class="progress" id="progress"></div>
-                    </div>
-
-                    <div class="time-container">
-                        <span id="currentTime">00:00</span>
-                        <span id="duration">00:00</span>
-                    </div>
-
-                    <div class="controls">
-                        <button class="control-btn" id="prevBtn">
-                            <i class="fas fa-step-backward"></i>
-                        </button>
-                        <button class="control-btn play-pause" id="playPauseBtn">
-                            <i class="fas fa-play" id="playIcon"></i>
-                        </button>
-                        <button class="control-btn" id="nextBtn">
-                            <i class="fas fa-step-forward"></i>
-                        </button>
-                    </div>
-
-                    <div class="volume-container">
-                        <i class="fas fa-volume-up"></i>
-                        <input type="range" class="volume-slider" id="volumeSlider" min="0" max="1" step="0.01" value="0.7">
-                    </div>
-
-                    <div class="lyrics-container">
-                        <div class="lyrics" id="lyrics"></div>
-                    </div>
+            <div class="cover-container" id="coverContainer">
+                <div class="cover" id="albumCover">
+                    <img src="images/cover1.jpg" alt="Album Cover">
                 </div>
             </div>
-
             <footer>
                 由2025 郭浩天匠心制作完成.
             </footer>
@@ -439,52 +227,18 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // LRC 歌词解析器
-            function parseLRC(lrcText) {
-                const lines = lrcText.split('\n');
-                const result = [];
+            const welcomePage = document.getElementById('welcomePage');
+            const enterBtn = document.getElementById('enterBtn');
+            const playerContainer = document.getElementById('playerContainer');
 
-                for (let line of lines) {
-                    const timeTags = line.match(/\[(\d{2}):(\d{2})(\.\d{2,3})?\]/g);
-                    if (!timeTags) continue;
-
-                    const text = line.replace(timeTags.join(''), '').trim();
-                    if (!text) continue;
-
-                    for (let tag of timeTags) {
-                        const match = tag.match(/\[(\d{2}):(\d{2})(\.\d{2,3})?\]/);
-                        const minutes = parseFloat(match[1]);
-                        const seconds = parseFloat(match[2]);
-                        const milliseconds = match[3] ? parseFloat(match[3]) * 1000 : 0;
-                        const time = minutes * 60 + seconds + milliseconds / 1000;
-
-                        result.push({ time, text });
-                    }
-                }
-
-                result.sort((a, b) => a.time - b.time);
-                return result;
-            }
-
-            const lyricsFile = "lyrics/撒马尔罕乌鸣.lrc";  // 使用实际的歌词文件路径
-
-            async function loadSong() {
-                const response = await fetch(lyricsFile);
-                const lrcText = await response.text();
-                const lyrics = parseLRC(lrcText);
-
-                // 生成歌词DOM
-                const lyricsContainer = document.getElementById('lyrics');
-                lyrics.forEach(lyric => {
-                    const p = document.createElement('p');
-                    p.className = 'lyric-line';
-                    p.textContent = lyric.text;
-                    p.dataset.time = lyric.time;
-                    lyricsContainer.appendChild(p);
-                });
-            }
-
-            loadSong();
+            // 点击按钮时跳转到播放器页面
+            enterBtn.addEventListener('click', function() {
+                welcomePage.style.opacity = '0';
+                setTimeout(() => {
+                    welcomePage.style.display = 'none';
+                    playerContainer.style.display = 'block';
+                }, 1000);
+            });
         });
     </script>
 </body>

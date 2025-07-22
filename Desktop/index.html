@@ -28,14 +28,12 @@
             position: relative;
         }
         
-        /* 花瓣飘落效果 */
+        /* 增强的花瓣飘落效果 */
         .petal {
             position: absolute;
             top: -20px;
             background: rgba(255, 192, 203, 0.7);
             border-radius: 50% 50% 0 50%;
-            width: 15px;
-            height: 15px;
             animation: fall linear infinite;
             z-index: 0;
         }
@@ -65,7 +63,7 @@
             justify-content: center;
             background: rgba(40, 15, 60, 0.85);
             z-index: 100;
-            transition: opacity 1s ease;
+            transition: opacity 0.8s ease;
             backdrop-filter: blur(3px);
         }
         
@@ -148,7 +146,7 @@
             position: relative;
         }
         
-        .layout-controls {
+        .header-controls {
             position: absolute;
             top: 20px;
             right: 20px;
@@ -156,7 +154,7 @@
             gap: 10px;
         }
         
-        .layout-btn {
+        .header-btn {
             background: rgba(255, 255, 255, 0.1);
             border: none;
             color: white;
@@ -171,89 +169,16 @@
             font-size: 1rem;
         }
         
-        .layout-btn:hover {
+        .header-btn:hover {
             background: rgba(255, 255, 255, 0.2);
             transform: scale(1.1);
-        }
-        
-        .layout-btn.active {
-            background: linear-gradient(to right, #da70d6, #9370db);
         }
         
         .player-container {
             padding: 20px;
             transition: all 0.5s ease;
-        }
-        
-        /* 布局1：左右布局 */
-        .layout-horizontal .player-content {
-            display: flex;
-            gap: 30px;
-        }
-        
-        .layout-horizontal .cover-container {
-            flex: 1;
-            margin-bottom: 0;
-        }
-        
-        .layout-horizontal .lyrics-section {
-            flex: 1;
             display: flex;
             flex-direction: column;
-        }
-        
-        .layout-horizontal .lyrics-container {
-            flex: 1;
-            margin: 0;
-            height: auto;
-        }
-        
-        /* 布局2：滑动切换 */
-        .layout-slider .player-content {
-            position: relative;
-            overflow: hidden;
-            height: 350px;
-        }
-        
-        .layout-slider .cover-container, 
-        .layout-slider .lyrics-section {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            transition: transform 0.6s ease;
-        }
-        
-        .layout-slider .cover-container {
-            transform: translateX(0);
-        }
-        
-        .layout-slider .lyrics-section {
-            transform: translateX(100%);
-        }
-        
-        .layout-slider.show-lyrics .cover-container {
-            transform: translateX(-100%);
-        }
-        
-        .layout-slider.show-lyrics .lyrics-section {
-            transform: translateX(0);
-        }
-        
-        .layout-slider .slider-controls {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 20px;
-            z-index: 10;
-        }
-        
-        /* 布局3：上下布局（默认） */
-        .layout-vertical .player-content {
-            display: block;
         }
         
         .cover-container {
@@ -261,6 +186,24 @@
             justify-content: center;
             margin-bottom: 25px;
             transition: all 0.5s ease;
+            position: relative;
+        }
+        
+        .toggle-cover {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            border: none;
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
         .cover {
@@ -297,7 +240,7 @@
         
         .song-info {
             text-align: center;
-            margin-bottom: 25px;
+            margin-bottom: 15px;
         }
         
         .song-title {
@@ -316,7 +259,7 @@
             height: 8px;
             background: rgba(255, 255, 255, 0.1);
             border-radius: 10px;
-            margin: 25px 0;
+            margin: 15px 0;
             cursor: pointer;
             position: relative;
         }
@@ -356,7 +299,7 @@
             justify-content: center;
             align-items: center;
             gap: 25px;
-            margin: 20px 0;
+            margin: 15px 0;
         }
         
         .control-btn {
@@ -394,7 +337,7 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            margin-top: 15px;
+            margin: 10px 0;
             justify-content: center;
         }
         
@@ -418,14 +361,14 @@
         }
         
         .lyrics-section {
-            transition: all 0.5s ease;
+            order: -1; /* 移动端歌词在上方 */
+            margin-bottom: 20px;
         }
         
         .lyrics-container {
             height: 200px; /* 固定高度，显示5行歌词 */
             overflow-y: auto;
             position: relative;
-            margin: 30px 0;
             border-radius: 10px;
             background: rgba(40, 20, 60, 0.5);
             padding: 15px;
@@ -484,7 +427,7 @@
         }
         
         .playlist-container {
-            margin: 25px 0;
+            margin: 20px 0;
         }
         
         .playlist-title {
@@ -559,28 +502,53 @@
             border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
         
-        /* 响应式设计 */
+        /* 响应式设计 - 移动端优化 */
         @media (max-width: 768px) {
             .welcome-poem { font-size: 1.8rem; }
             .enter-btn { font-size: 1.5rem; padding: 12px 30px; }
-            .cover { width: 200px; height: 200px; }
+            .cover { width: 180px; height: 180px; }
             .song-title { font-size: 1.5rem; }
-            .control-btn { width: 45px; height: 45px; }
+            .control-btn { width: 42px; height: 42px; font-size: 1.1rem; }
             .control-btn.play-pause { width: 60px; height: 60px; }
             
-            .layout-horizontal .player-content {
+            .player-container {
                 flex-direction: column;
             }
             
-            .layout-slider .player-content {
-                height: 300px;
+            .lyrics-section {
+                order: -1;
+                margin-bottom: 15px;
+            }
+            
+            .cover-container {
+                margin-top: 10px;
             }
         }
         
         @media (max-width: 480px) {
             .welcome-poem { font-size: 1.5rem; }
-            .enter-btn { font-size: 1.3rem; }
-            .cover { width: 180px; height: 180px; }
+            .enter-btn { font-size: 1.3rem; padding: 10px 25px; }
+            .cover { width: 160px; height: 160px; }
+            .song-title { font-size: 1.4rem; }
+            .control-btn { width: 40px; height: 40px; }
+            .control-btn.play-pause { width: 55px; height: 55px; }
+            
+            .lyrics-container {
+                height: 180px;
+            }
+        }
+        
+        /* 隐藏封面时的样式 */
+        .cover-hidden .cover {
+            transform: scale(0);
+            height: 0;
+            width: 0;
+            margin: 0;
+            opacity: 0;
+        }
+        
+        .cover-hidden .cover-container {
+            margin-bottom: 0;
         }
     </style>
 </head>
@@ -603,75 +571,61 @@
     </div>
     
     <!-- 主播放器容器 -->
-    <div class="container layout-vertical" id="playerContainer">
+    <div class="container" id="playerContainer">
         <header>
             <h1>音乐自留地</h1>
-            <div class="layout-controls">
-                <button class="layout-btn active" data-layout="vertical" title="上下布局">
-                    <i class="fas fa-align-center"></i>
-                </button>
-                <button class="layout-btn" data-layout="horizontal" title="左右布局">
-                    <i class="fas fa-columns"></i>
-                </button>
-                <button class="layout-btn" data-layout="slider" title="滑动切换">
-                    <i class="fas fa-exchange-alt"></i>
+            <div class="header-controls">
+                <button class="header-btn" id="libraryBtn" title="我的音乐库">
+                    <i class="fas fa-music"></i>
                 </button>
             </div>
         </header>
         
         <div class="player-container">
-            <div class="player-content">
-                <div class="cover-container" id="coverContainer">
-                    <div class="cover" id="albumCover">
-                        <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="Album Cover">
-                    </div>
+            <div class="lyrics-section">
+                <div class="lyrics-container">
+                    <div class="lyrics" id="lyrics"></div>
                 </div>
-                
-                <div class="lyrics-section" id="lyricsSection">
-                    <div class="song-info">
-                        <h2 class="song-title" id="songTitle">撒马尔罕乌鸣</h2>
-                        <p class="song-artist" id="songArtist">麦某</p>
-                    </div>
-                    
-                    <div class="progress-container" id="progressContainer">
-                        <div class="progress" id="progress"></div>
-                    </div>
-                    
-                    <div class="time-container">
-                        <span id="currentTime">00:00</span>
-                        <span id="duration">00:00</span>
-                    </div>
-                    
-                    <div class="controls">
-                        <button class="control-btn" id="prevBtn">
-                            <i class="fas fa-step-backward"></i>
-                        </button>
-                        <button class="control-btn play-pause" id="playPauseBtn">
-                            <i class="fas fa-play" id="playIcon"></i>
-                        </button>
-                        <button class="control-btn" id="nextBtn">
-                            <i class="fas fa-step-forward"></i>
-                        </button>
-                    </div>
-                    
-                    <div class="volume-container">
-                        <i class="fas fa-volume-up"></i>
-                        <input type="range" class="volume-slider" id="volumeSlider" min="0" max="1" step="0.01" value="0.7">
-                    </div>
-                    
-                    <div class="lyrics-container">
-                        <div class="lyrics" id="lyrics"></div>
-                    </div>
-                    
-                    <div class="slider-controls" id="sliderControls" style="display: none;">
-                        <button class="control-btn" id="showCoverBtn">
-                            <i class="fas fa-image"></i> 封面
-                        </button>
-                        <button class="control-btn" id="showLyricsBtn">
-                            <i class="fas fa-music"></i> 歌词
-                        </button>
-                    </div>
+            </div>
+            
+            <div class="cover-container">
+                <button class="toggle-cover" id="toggleCoverBtn" title="隐藏封面">
+                    <i class="fas fa-eye-slash"></i>
+                </button>
+                <div class="cover" id="albumCover">
+                    <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="Album Cover">
                 </div>
+            </div>
+            
+            <div class="song-info">
+                <h2 class="song-title" id="songTitle">撒马尔罕乌鸣</h2>
+                <p class="song-artist" id="songArtist">麦某</p>
+            </div>
+            
+            <div class="progress-container" id="progressContainer">
+                <div class="progress" id="progress"></div>
+            </div>
+            
+            <div class="time-container">
+                <span id="currentTime">00:00</span>
+                <span id="duration">00:00</span>
+            </div>
+            
+            <div class="controls">
+                <button class="control-btn" id="prevBtn">
+                    <i class="fas fa-step-backward"></i>
+                </button>
+                <button class="control-btn play-pause" id="playPauseBtn">
+                    <i class="fas fa-play" id="playIcon"></i>
+                </button>
+                <button class="control-btn" id="nextBtn">
+                    <i class="fas fa-step-forward"></i>
+                </button>
+            </div>
+            
+            <div class="volume-container">
+                <i class="fas fa-volume-up"></i>
+                <input type="range" class="volume-slider" id="volumeSlider" min="0" max="1" step="0.01" value="0.7">
             </div>
             
             <div class="playlist-container">
@@ -690,27 +644,29 @@
     
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // 创建花瓣效果
+            // 创建增强的花瓣效果
             function createPetals() {
                 const container = document.getElementById('petalsContainer');
-                const petalCount = 30;
+                const petalCount = 50; // 增加花瓣数量
                 
                 for (let i = 0; i < petalCount; i++) {
                     const petal = document.createElement('div');
                     petal.classList.add('petal');
                     
                     // 随机属性
-                    const size = Math.random() * 10 + 5;
+                    const size = Math.random() * 15 + 8; // 更大的花瓣
                     const left = Math.random() * 100;
-                    const animationDuration = Math.random() * 10 + 10;
-                    const delay = Math.random() * 5;
+                    const animationDuration = Math.random() * 6 + 4; // 更快的速度
+                    const delay = Math.random() * 2;
+                    const hue = Math.random() * 30 + 320; // 紫色系花瓣
                     
                     petal.style.width = `${size}px`;
                     petal.style.height = `${size}px`;
                     petal.style.left = `${left}%`;
                     petal.style.animationDuration = `${animationDuration}s`;
                     petal.style.animationDelay = `${delay}s`;
-                    petal.style.opacity = Math.random() * 0.5 + 0.3;
+                    petal.style.opacity = Math.random() * 0.7 + 0.3;
+                    petal.style.background = `hsla(${hue}, 70%, 75%, ${Math.random() * 0.5 + 0.3})`;
                     
                     container.appendChild(petal);
                 }
@@ -776,18 +732,15 @@
             const songArtist = document.getElementById('songArtist');
             const lyricsContainer = document.getElementById('lyrics');
             const playlistElement = document.getElementById('playlist');
-            const layoutBtns = document.querySelectorAll('.layout-btn');
-            const sliderControls = document.getElementById('sliderControls');
-            const showCoverBtn = document.getElementById('showCoverBtn');
-            const showLyricsBtn = document.getElementById('showLyricsBtn');
-            const coverContainer = document.getElementById('coverContainer');
-            const lyricsSection = document.getElementById('lyricsSection');
+            const toggleCoverBtn = document.getElementById('toggleCoverBtn');
+            const libraryBtn = document.getElementById('libraryBtn');
+            const coverContainer = document.querySelector('.cover-container');
             
             // 当前歌曲索引
             let currentSongIndex = 0;
             let isPlaying = false;
             let currentLyrics = [];
-            let currentLayout = 'vertical';
+            let coverVisible = true;
             
             // 初始化播放列表
             function initPlaylist() {
@@ -821,7 +774,6 @@
                 audioPlayer.src = song.src;
                 songTitle.textContent = song.title;
                 songArtist.textContent = song.artist;
-                albumCover.querySelector('img').src = song.cover;
                 
                 // 更新播放列表高亮
                 document.querySelectorAll('.playlist-item').forEach((item, i) => {
@@ -834,6 +786,7 @@
                 
                 // 加载并解析歌词
                 try {
+                    // 这里使用您的真实歌词文件
                     const response = await fetch(song.lrc);
                     if (!response.ok) throw new Error('歌词加载失败');
                     const lrcText = await response.text();
@@ -983,26 +936,21 @@
                 audioPlayer.currentTime = (clickX / width) * duration;
             }
             
-            // 切换布局
-            function switchLayout(layout) {
-                currentLayout = layout;
-                playerContainer.className = `container layout-${layout}`;
+            // 切换封面显示
+            function toggleCover() {
+                coverVisible = !coverVisible;
+                coverContainer.classList.toggle('cover-hidden', !coverVisible);
                 
-                // 更新按钮状态
-                layoutBtns.forEach(btn => {
-                    if (btn.dataset.layout === layout) {
-                        btn.classList.add('active');
-                    } else {
-                        btn.classList.remove('active');
-                    }
-                });
-                
-                // 显示/隐藏滑动控制按钮
-                if (layout === 'slider') {
-                    sliderControls.style.display = 'flex';
-                    playerContainer.classList.remove('show-lyrics');
+                // 更新按钮图标
+                const icon = toggleCoverBtn.querySelector('i');
+                if (coverVisible) {
+                    icon.classList.remove('fa-eye');
+                    icon.classList.add('fa-eye-slash');
+                    toggleCoverBtn.title = "隐藏封面";
                 } else {
-                    sliderControls.style.display = 'none';
+                    icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
+                    toggleCoverBtn.title = "显示封面";
                 }
             }
             
@@ -1015,7 +963,7 @@
                     welcomePage.style.display = 'none';
                     playerContainer.style.display = 'block';
                     loadSong(0);
-                }, 1000);
+                }, 800);
             });
             
             playPauseBtn.addEventListener('click', () => {
@@ -1035,21 +983,14 @@
                 audioPlayer.volume = volumeSlider.value;
             });
             
-            // 布局切换按钮
-            layoutBtns.forEach(btn => {
-                btn.addEventListener('click', function() {
-                    switchLayout(this.dataset.layout);
-                });
+            toggleCoverBtn.addEventListener('click', toggleCover);
+            
+            libraryBtn.addEventListener('click', function() {
+                alert("音乐库功能正在开发中，敬请期待！");
             });
             
-            // 滑动布局控制按钮
-            showCoverBtn.addEventListener('click', function() {
-                playerContainer.classList.remove('show-lyrics');
-            });
-            
-            showLyricsBtn.addEventListener('click', function() {
-                playerContainer.classList.add('show-lyrics');
-            });
+            // 初始化
+            initPlaylist();
         });
     </script>
 </body>

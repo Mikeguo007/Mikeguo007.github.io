@@ -23,9 +23,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            position: relative;
+            overflow: auto; /* 允许页面滚动 */
         }
         
         /* 增强的花瓣飘落效果 */
@@ -130,7 +128,7 @@
             background: rgba(30, 15, 45, 0.85);
             border-radius: 20px;
             box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
-            overflow: hidden;
+            overflow: visible; /* 允许内容扩展 */
             backdrop-filter: blur(10px);
             margin: 20px auto;
             display: none; /* 初始隐藏 */
@@ -887,41 +885,37 @@
                 updateLyrics(currentTime);
             }
             
-            // 更新歌词高亮和位置
+            // 更新歌词高亮和位置 - 已修复的版本
             function updateLyrics(currentTime) {
                 const lines = document.querySelectorAll('.lyric-line');
                 let activeLine = null;
                 let activeIndex = -1;
                 
                 // 找到当前时间对应的歌词行
-                for (let i = lines.length - 1; i >= 0; i--) {
+                for (let i = 0; i < lines.length; i++) {
                     const time = parseFloat(lines[i].dataset.time);
                     if (currentTime >= time) {
-                        lines[i].classList.add('active');
                         activeLine = lines[i];
                         activeIndex = i;
-                        
-                        // 移除其他行的active类
-                        for (let j = 0; j < lines.length; j++) {
-                            if (j !== i) {
-                                lines[j].classList.remove('active');
-                            }
-                        }
+                    } else {
                         break;
                     }
                 }
                 
-                // 平滑滚动到当前歌词
+                // 更新活动行样式
+                lines.forEach(line => line.classList.remove('active'));
+                if (activeLine) activeLine.classList.add('active');
+                
+                // 计算滚动位置（确保当前行居中）
                 if (activeLine) {
-                    const containerHeight = lyricsContainer.clientHeight;
-                    const lineHeight = activeLine.clientHeight;
-                    const lineOffset = activeLine.offsetTop;
+                    const container = document.querySelector('.lyrics-container');
+                    const containerHeight = container.clientHeight;
+                    const lineHeight = activeLine.offsetHeight;
+                    const scrollTop = activeLine.offsetTop - (containerHeight / 2) + (lineHeight / 2);
                     
-                    // 计算滚动位置（使当前行居中）
-                    const scrollTo = lineOffset - (containerHeight / 2) + (lineHeight / 2);
-                    
-                    lyricsContainer.scrollTo({
-                        top: scrollTo,
+                    // 应用平滑滚动
+                    container.scrollTo({
+                        top: scrollTop,
                         behavior: 'smooth'
                     });
                 }

@@ -26,27 +26,56 @@ body {
             overflow: auto; /* 允许页面滚动 */
         }
         
-        /* 增强的花瓣飘落效果 */
-        .petal {
-            position: absolute;
-            top: -20px;
-            background: rgba(255, 192, 203, 0.7);
-            border-radius: 50% 50% 0 50%;
-            animation: fall linear infinite;
-            z-index: 150;
-        }
-        
-        @keyframes fall {
-            to {
-                transform: translateY(105vh) rotate(360deg);
-            }
-        }
-        
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
+       /* 优化后的花瓣飘落效果 */
+.petal {
+    position: absolute;
+    top: -20px;
+    z-index: 150;
+    pointer-events: none;
+    animation: fall linear infinite;
+    opacity: 0.8;
+    filter: blur(1px);
+    mix-blend-mode: screen;
+}
+
+/* 三种花瓣形状 */
+.petal.type1 {
+    width: 20px;
+    height: 20px;
+    background: rgba(255, 182, 193, 0.7); /* 浅粉色 */
+    border-radius: 50% 50% 0 50%;
+    transform: rotate(45deg);
+}
+
+.petal.type2 {
+    width: 18px;
+    height: 18px;
+    background: rgba(255, 105, 180, 0.6); /* 深粉色 */
+    border-radius: 50% 50% 50% 0;
+    clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+}
+
+.petal.type3 {
+    width: 15px;
+    height: 15px;
+    background: rgba(255, 192, 203, 0.8); /* 粉红色 */
+    border-radius: 50%;
+    transform: scale(0.8);
+}
+
+@keyframes fall {
+    0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 0.8;
+    }
+    80% {
+        opacity: 0.5;
+    }
+    100% {
+        transform: translateY(105vh) rotate(360deg);
+        opacity: 0;
+    }
+}
         
         /* 欢迎页面样式 */
         .welcome-page {
@@ -642,33 +671,35 @@ body {
     
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // 创建增强的花瓣效果
-            function createPetals() {
-                const container = document.getElementById('petalsContainer');
-                const petalCount = 50; // 增加花瓣数量
-                
-                for (let i = 0; i < petalCount; i++) {
-                    const petal = document.createElement('div');
-                    petal.classList.add('petal');
-                    
-                    // 随机属性
-                    const size = Math.random() * 15 + 8; // 更大的花瓣
-                    const left = Math.random() * 100;
-                    const animationDuration = Math.random() * 6 + 4; // 更快的速度
-                    const delay = Math.random() * 2;
-                    const hue = Math.random() * 30 + 320; // 紫色系花瓣
-                    
-                    petal.style.width = `${size}px`;
-                    petal.style.height = `${size}px`;
-                    petal.style.left = `${left}%`;
-                    petal.style.animationDuration = `${animationDuration}s`;
-                    petal.style.animationDelay = `${delay}s`;
-                    petal.style.opacity = Math.random() * 0.7 + 0.3;
-                    petal.style.background = `hsla(${hue}, 70%, 75%, ${Math.random() * 0.5 + 0.3})`;
-                    
-                    container.appendChild(petal);
-                }
-            }
+            // 创建花瓣效果 - 优化版
+function createPetals() {
+    const container = document.getElementById('petalsContainer');
+    const petalCount = 80; // 增加花瓣数量
+    
+    for (let i = 0; i < petalCount; i++) {
+        const petal = document.createElement('div');
+        petal.classList.add('petal');
+        
+        // 随机选择花瓣类型
+        const petalType = Math.floor(Math.random() * 3) + 1;
+        petal.classList.add(`type${petalType}`);
+        
+        // 随机属性
+        const left = Math.random() * 100;
+        const animationDuration = Math.random() * 8 + 5; // 5-13秒
+        const delay = Math.random() * 10; // 0-10秒延迟
+        const rotation = Math.random() * 360;
+        const scale = Math.random() * 0.5 + 0.5; // 0.5-1倍大小
+        
+        petal.style.left = `${left}%`;
+        petal.style.animationDuration = `${animationDuration}s`;
+        petal.style.animationDelay = `${delay}s`;
+        petal.style.transform = `rotate(${rotation}deg) scale(${scale})`;
+        petal.style.opacity = Math.random() * 0.5 + 0.3;
+        
+        container.appendChild(petal);
+    }
+}
             
             // LRC 歌词解析器
             function parseLRC(lrcText) {

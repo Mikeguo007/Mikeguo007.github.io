@@ -54,13 +54,14 @@
             -webkit-text-fill-color: transparent;
             letter-spacing: 2px;
             text-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            color: black;
         }
 
         .welcome-poem {
             font-size: 2.2rem;
             line-height: 1.8;
             margin-bottom: 20px;
-            color: #e0e0e0;
+            color: black;
             font-style: italic;
         }
 
@@ -134,6 +135,48 @@
         .player-container {
             padding: 20px;
             transition: all 0.5s ease;
+        }
+
+        /* Layout styles */
+        .layout-horizontal .player-content {
+            display: flex;
+            gap: 30px;
+        }
+
+        .layout-slider .player-content {
+            position: relative;
+            overflow: hidden;
+            height: 350px;
+        }
+
+        .layout-slider .cover-container,
+        .layout-slider .lyrics-section {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s ease;
+        }
+
+        .layout-slider .cover-container {
+            transform: translateX(0);
+        }
+
+        .layout-slider .lyrics-section {
+            transform: translateX(100%);
+        }
+
+        .layout-slider.show-lyrics .cover-container {
+            transform: translateX(-100%);
+        }
+
+        .layout-slider.show-lyrics .lyrics-section {
+            transform: translateX(0);
+        }
+
+        .layout-vertical .player-content {
+            display: block;
         }
 
         .cover-container {
@@ -252,6 +295,7 @@
             color: #b3b3b3;
             border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
+
     </style>
 </head>
 <body>
@@ -274,31 +318,35 @@
         </header>
 
         <div class="player-container">
-            <div class="cover-container" id="coverContainer">
-                <div class="cover" id="albumCover">
-                    <img src="images/cover1.jpg" alt="Album Cover">
+            <div class="player-content">
+                <div class="cover-container" id="coverContainer">
+                    <div class="cover" id="albumCover">
+                        <img src="images/cover1.jpg" alt="Album Cover">
+                    </div>
                 </div>
-            </div>
 
-            <div class="song-info">
-                <h2 class="song-title" id="songTitle">撒马尔罕乌鸣</h2>
-                <p class="song-artist" id="songArtist">麦某</p>
-            </div>
+                <div class="lyrics-section" id="lyricsSection">
+                    <div class="song-info">
+                        <h2 class="song-title" id="songTitle">撒马尔罕乌鸣</h2>
+                        <p class="song-artist" id="songArtist">麦某</p>
+                    </div>
 
-            <div class="progress-container" id="progressContainer">
-                <div class="progress" id="progress"></div>
-            </div>
+                    <div class="progress-container" id="progressContainer">
+                        <div class="progress" id="progress"></div>
+                    </div>
 
-            <div class="controls">
-                <button class="control-btn" id="prevBtn">
-                    <i class="fas fa-step-backward"></i>
-                </button>
-                <button class="control-btn play-pause" id="playPauseBtn">
-                    <i class="fas fa-play" id="playIcon"></i>
-                </button>
-                <button class="control-btn" id="nextBtn">
-                    <i class="fas fa-step-forward"></i>
-                </button>
+                    <div class="controls">
+                        <button class="control-btn" id="prevBtn">
+                            <i class="fas fa-step-backward"></i>
+                        </button>
+                        <button class="control-btn play-pause" id="playPauseBtn">
+                            <i class="fas fa-play" id="playIcon"></i>
+                        </button>
+                        <button class="control-btn" id="nextBtn">
+                            <i class="fas fa-step-forward"></i>
+                        </button>
+                    </div>
+                </div>
             </div>
 
             <footer>
@@ -320,7 +368,7 @@
             const progress = document.getElementById('progress');
             const songTitle = document.getElementById('songTitle');
             const songArtist = document.getElementById('songArtist');
-            
+
             const songPath = "audio/撒马尔罕乌鸣.mp3"; // 歌曲路径
 
             // 初始化播放器

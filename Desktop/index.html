@@ -22,7 +22,7 @@
             height: 100vh;
             background: #ffffff;
             flex-direction: column;
-            overflow: hidden;
+            overflow-y: auto;
         }
 
         /* 欢迎页面 */
@@ -137,6 +137,48 @@
         .player-container {
             padding: 20px;
             transition: all 0.5s ease;
+        }
+
+        /* Layout styles */
+        .layout-horizontal .player-content {
+            display: flex;
+            gap: 30px;
+        }
+
+        .layout-slider .player-content {
+            position: relative;
+            overflow: hidden;
+            height: 350px;
+        }
+
+        .layout-slider .cover-container,
+        .layout-slider .lyrics-section {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s ease;
+        }
+
+        .layout-slider .cover-container {
+            transform: translateX(0);
+        }
+
+        .layout-slider .lyrics-section {
+            transform: translateX(100%);
+        }
+
+        .layout-slider.show-lyrics .cover-container {
+            transform: translateX(-100%);
+        }
+
+        .layout-slider.show-lyrics .lyrics-section {
+            transform: translateX(0);
+        }
+
+        .layout-vertical .player-content {
+            display: block;
         }
 
         .cover-container {
@@ -465,6 +507,12 @@
                         line.classList.remove('active');
                     }
                 });
+
+                // 滚动歌词
+                const activeLine = document.querySelector('.lyric-line.active');
+                if (activeLine) {
+                    lyricsContainer.scrollTop = activeLine.offsetTop - lyricsContainer.offsetTop;
+                }
             }
 
             enterBtn.addEventListener('click', function() {

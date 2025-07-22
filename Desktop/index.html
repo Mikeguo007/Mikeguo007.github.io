@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>撒马尔罕乌鸣 | 音乐分享</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -22,6 +22,7 @@
             height: 100vh;
             background: #ffffff;
             flex-direction: column;
+            overflow: hidden;
         }
 
         /* 欢迎页面 */
@@ -136,48 +137,6 @@
         .player-container {
             padding: 20px;
             transition: all 0.5s ease;
-        }
-
-        /* Layout styles */
-        .layout-horizontal .player-content {
-            display: flex;
-            gap: 30px;
-        }
-
-        .layout-slider .player-content {
-            position: relative;
-            overflow: hidden;
-            height: 350px;
-        }
-
-        .layout-slider .cover-container,
-        .layout-slider .lyrics-section {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            transition: transform 0.6s ease;
-        }
-
-        .layout-slider .cover-container {
-            transform: translateX(0);
-        }
-
-        .layout-slider .lyrics-section {
-            transform: translateX(100%);
-        }
-
-        .layout-slider.show-lyrics .cover-container {
-            transform: translateX(-100%);
-        }
-
-        .layout-slider.show-lyrics .lyrics-section {
-            transform: translateX(0);
-        }
-
-        .layout-vertical .player-content {
-            display: block;
         }
 
         .cover-container {
@@ -336,3 +295,190 @@
             <div class="welcome-poem">
                 最是伊人初见样<br>
                 笑盈眸，语轻柔
+            </div>
+            <div class="enter-btn" id="enterBtn">与君初相识，犹若故人归</div>
+        </div>
+    </div>
+
+    <!-- 主播放器容器 -->
+    <div class="container layout-vertical" id="playerContainer">
+        <header>
+            <h1>撒马尔罕乌鸣</h1>
+        </header>
+
+        <div class="player-container">
+            <div class="player-content">
+                <div class="cover-container" id="coverContainer">
+                    <div class="cover" id="albumCover">
+                        <img src="images/cover1.jpg" alt="Album Cover">
+                    </div>
+                </div>
+
+                <div class="lyrics-section" id="lyricsSection">
+                    <div class="song-info">
+                        <h2 class="song-title" id="songTitle">撒马尔罕乌鸣</h2>
+                        <p class="song-artist" id="songArtist">麦某</p>
+                    </div>
+
+                    <div class="progress-container" id="progressContainer">
+                        <div class="progress" id="progress"></div>
+                    </div>
+
+                    <div class="controls">
+                        <button class="control-btn" id="prevBtn">
+                            <i class="fas fa-step-backward"></i>
+                        </button>
+                        <button class="control-btn play-pause" id="playPauseBtn">
+                            <i class="fas fa-play" id="playIcon"></i>
+                        </button>
+                        <button class="control-btn" id="nextBtn">
+                            <i class="fas fa-step-forward"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="lyrics-container" id="lyricsContainer"></div>
+            </div>
+
+            <footer>
+                由2025 郭浩天匠心制作完成.
+            </footer>
+        </div>
+    </div>
+
+    <audio id="audioPlayer" preload="auto"></audio>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const welcomePage = document.getElementById('welcomePage');
+            const enterBtn = document.getElementById('enterBtn');
+            const playerContainer = document.getElementById('playerContainer');
+            const playPauseBtn = document.getElementById('playPauseBtn');
+            const playIcon = document.getElementById('playIcon');
+            const audioPlayer = document.getElementById('audioPlayer');
+            const progress = document.getElementById('progress');
+            const songTitle = document.getElementById('songTitle');
+            const songArtist = document.getElementById('songArtist');
+            const lyricsContainer = document.getElementById('lyricsContainer');
+
+            const songPath = "audio/撒马尔罕乌鸣.mp3"; // 歌曲路径
+            let currentLyrics = [];  // 存储歌词
+
+            // LRC 歌词解析器
+            function parseLRC(lrcText) {
+                const lines = lrcText.split('\n');
+                const result = [];
+
+                for (let line of lines) {
+                    const timeTags = line.match(/\[(\d{2}):(\d{2})(\.\d{2,3})?\]/g);
+                    if (!timeTags) continue;
+
+                    const text = line.replace(timeTags.join(''), '').trim();
+                    if (!text) continue;
+
+                    for (let tag of timeTags) {
+                        const match = tag.match(/\[(\d{2}):(\d{2})(\.\d{2,3})?\]/);
+                        const minutes = parseFloat(match[1]);
+                        const seconds = parseFloat(match[2]);
+                        const milliseconds = match[3] ? parseFloat(match[3]) * 1000 : 0;
+                        const time = minutes * 60 + seconds + milliseconds / 1000;
+
+                        result.push({ time, text });
+                    }
+                }
+
+                result.sort((a, b) => a.time - b.time);
+                return result;
+            }
+
+            // 加载歌词文件
+            function loadLyrics() {
+                fetch('lyrics/撒马尔罕乌鸣.lrc')
+                    .then(response => response.text())
+                    .then(lrcText => {
+                        currentLyrics = parseLRC(lrcText);
+                        generateLyrics();
+                    });
+            }
+
+            // 生成歌词
+            function generateLyrics() {
+                lyricsContainer.innerHTML = '';
+                currentLyrics.forEach(lyric => {
+                    const p = document.createElement('p');
+                    p.className = 'lyric-line';
+                    p.textContent = lyric.text;
+                    p.dataset.time = lyric.time;
+
+                    p.addEventListener('click', function() {
+                        const time = parseFloat(this.dataset.time);
+                        audioPlayer.currentTime = time;
+                        if (audioPlayer.paused) {
+                            audioPlayer.play();
+                            playIcon.classList.remove('fa-play');
+                            playIcon.classList.add('fa-pause');
+                        }
+                    });
+
+                    lyricsContainer.appendChild(p);
+                });
+            }
+
+            // 初始化播放器
+            function loadSong() {
+                audioPlayer.src = songPath;
+                songTitle.textContent = "撒马尔罕乌鸣";
+                songArtist.textContent = "麦某";
+                loadLyrics();  // 加载歌词
+            }
+
+            // 播放或暂停歌曲
+            function playPauseSong() {
+                if (audioPlayer.paused) {
+                    audioPlayer.play();
+                    playIcon.classList.remove('fa-play');
+                    playIcon.classList.add('fa-pause');
+                } else {
+                    audioPlayer.pause();
+                    playIcon.classList.remove('fa-pause');
+                    playIcon.classList.add('fa-play');
+                }
+            }
+
+            // 更新进度条
+            function updateProgress() {
+                const { duration, currentTime } = audioPlayer;
+                const progressPercent = (currentTime / duration) * 100;
+                progress.style.width = `${progressPercent}%`;
+
+                updateLyrics(currentTime);
+            }
+
+            // 更新歌词高亮
+            function updateLyrics(currentTime) {
+                const lines = document.querySelectorAll('.lyric-line');
+                lines.forEach(line => {
+                    const time = parseFloat(line.dataset.time);
+                    if (currentTime >= time) {
+                        line.classList.add('active');
+                    } else {
+                        line.classList.remove('active');
+                    }
+                });
+            }
+
+            enterBtn.addEventListener('click', function() {
+                welcomePage.style.opacity = '0';
+                setTimeout(() => {
+                    welcomePage.style.display = 'none';
+                    playerContainer.style.display = 'block';
+                    loadSong();
+                }, 1000);
+            });
+
+            playPauseBtn.addEventListener('click', playPauseSong);
+            audioPlayer.addEventListener('timeupdate', updateProgress);
+        });
+    </script>
+</body>
+</html>

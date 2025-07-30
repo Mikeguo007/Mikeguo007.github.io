@@ -860,7 +860,7 @@ body {
                 // 加载歌词
                 try {
                     // 这里使用您的真实歌词文件
-                    const response = await fetch(song.lrc);
+                    const response = await fetch(我在你眼中看到自由.lrc);
                     if (!response.ok) throw new Error('歌词加载失败');
                     const lrcText = await response.text();
                     currentLyrics = parseLRC(lrcText);

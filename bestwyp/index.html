@@ -599,6 +599,102 @@
             display: none;
             text-align: center;
         }
+        
+        /* 管理员面板样式 */
+        #adminPanel {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.95);
+            padding: 30px;
+            border-radius: 15px;
+            z-index: 1000;
+            color: white;
+            width: 90%;
+            max-width: 500px;
+            backdrop-filter: blur(10px);
+            border: 1px solid #da70d6;
+            box-shadow: 0 0 30px rgba(218, 112, 214, 0.3);
+        }
+        
+        #adminLogin {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.95);
+            padding: 30px;
+            border-radius: 15px;
+            z-index: 1000;
+            color: white;
+            width: 90%;
+            max-width: 400px;
+            backdrop-filter: blur(10px);
+            border: 1px solid #da70d6;
+            box-shadow: 0 0 30px rgba(218, 112, 214, 0.3);
+        }
+        
+        .admin-title {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #da70d6;
+            font-size: 1.5rem;
+        }
+        
+        .admin-stats {
+            margin-bottom: 20px;
+        }
+        
+        .admin-stats p {
+            margin: 10px 0;
+            padding: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 5px;
+        }
+        
+        .admin-stats span {
+            color: #da70d6;
+            font-weight: bold;
+        }
+        
+        .admin-input {
+            padding: 12px;
+            margin: 10px 0;
+            width: 100%;
+            border-radius: 5px;
+            border: 1px solid #da70d6;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            font-size: 1rem;
+        }
+        
+        .admin-btn {
+            padding: 12px;
+            background: #da70d6;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .admin-btn:hover {
+            background: #c150c1;
+            transform: translateY(-2px);
+        }
+        
+        .admin-hint {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 0.8rem;
+            color: #aaa;
+        }
     </style>
 </head>
 <body>
@@ -701,6 +797,28 @@
         </footer>
     </div>
     
+    <!-- 管理员面板 -->
+    <div id="adminPanel">
+        <h2 class="admin-title">访问统计</h2>
+        <div class="admin-stats" id="adminStats">
+            <p>总访问次数: <span id="totalVisits">0</span></p>
+            <p>今日访问: <span id="todayVisits">0</span></p>
+            <p>当前在线: <span id="currentOnline">0</span></p>
+            <p>首次访问: <span id="firstVisit">-</span></p>
+            <p>最后访问: <span id="lastVisit">-</span></p>
+        </div>
+        <button class="admin-btn" id="closeAdmin">关闭</button>
+        <div class="admin-hint">统计信息存储在本地浏览器中</div>
+    </div>
+    
+    <!-- 管理员登录 -->
+    <div id="adminLogin">
+        <h2 class="admin-title">管理员登录</h2>
+        <input type="password" id="adminPassword" class="admin-input" placeholder="输入管理员密码">
+        <button class="admin-btn" id="adminLoginBtn">登录</button>
+        <div class="admin-hint">提示：双击标题5次或按Ctrl+Shift+A可打开此面板</div>
+    </div>
+    
     <!-- 隐藏的音频元素 -->
     <audio id="audioPlayer"></audio>
     
@@ -799,15 +917,107 @@
             const bufferingMessage = document.getElementById('bufferingMessage');
             const browserHint = document.getElementById('browserHint');
             
+            // 管理员面板元素
+            const adminPanel = document.getElementById('adminPanel');
+            const adminLogin = document.getElementById('adminLogin');
+            const adminPassword = document.getElementById('adminPassword');
+            const adminLoginBtn = document.getElementById('adminLoginBtn');
+            const closeAdmin = document.getElementById('closeAdmin');
+            
             // 当前歌曲索引
             let currentSongIndex = 0;
             let isPlaying = false;
             let currentLyrics = [];
             let coverVisible = true;
             
+            // 访问统计功能
+            let visitStats = {
+                total: 0,
+                today: 0,
+                firstVisit: null,
+                lastVisit: null,
+                onlineUsers: 0
+            };
+            
+            // 管理员密码（你可以修改这个密码）
+            const ADMIN_PASSWORD = "wyp5201314";
+            
             // 检测移动端
             function isMobile() {
                 return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            }
+            
+            // 初始化访问统计
+            function initVisitStats() {
+                const stats = localStorage.getItem('visitStats');
+                if (stats) {
+                    visitStats = JSON.parse(stats);
+                }
+                
+                // 检查是否是今天第一次访问
+                const today = new Date().toDateString();
+                const lastVisitDate = visitStats.lastVisit ? new Date(visitStats.lastVisit).toDateString() : null;
+                
+                if (lastVisitDate !== today) {
+                    visitStats.today = 0;
+                }
+                
+                // 更新统计
+                visitStats.total++;
+                visitStats.today++;
+                visitStats.lastVisit = new Date().toISOString();
+                
+                if (!visitStats.firstVisit) {
+                    visitStats.firstVisit = visitStats.lastVisit;
+                }
+                
+                // 在线用户计数（简单的实现）
+                visitStats.onlineUsers = Math.max(1, Math.floor(visitStats.today * 0.1)); // 模拟在线用户
+                
+                // 保存到本地存储
+                localStorage.setItem('visitStats', JSON.stringify(visitStats));
+                
+                // 每5分钟更新一次最后访问时间（保持在线状态）
+                setInterval(() => {
+                    visitStats.lastVisit = new Date().toISOString();
+                    localStorage.setItem('visitStats', JSON.stringify(visitStats));
+                }, 5 * 60 * 1000);
+            }
+            
+            // 显示管理员登录
+            function showAdminLogin() {
+                adminLogin.style.display = 'block';
+                adminPassword.value = '';
+                adminPassword.focus();
+            }
+            
+            // 验证管理员密码
+            function verifyAdmin(password) {
+                return password === ADMIN_PASSWORD;
+            }
+            
+            // 显示统计面板
+            function showAdminPanel() {
+                updateAdminStats();
+                adminPanel.style.display = 'block';
+                adminLogin.style.display = 'none';
+            }
+            
+            // 更新统计显示
+            function updateAdminStats() {
+                document.getElementById('totalVisits').textContent = visitStats.total;
+                document.getElementById('todayVisits').textContent = visitStats.today;
+                document.getElementById('currentOnline').textContent = visitStats.onlineUsers;
+                
+                if (visitStats.firstVisit) {
+                    document.getElementById('firstVisit').textContent = 
+                        new Date(visitStats.firstVisit).toLocaleString();
+                }
+                
+                if (visitStats.lastVisit) {
+                    document.getElementById('lastVisit').textContent = 
+                        new Date(visitStats.lastVisit).toLocaleString();
+                }
             }
             
             // 显示加载状态
@@ -1129,6 +1339,9 @@
                     welcomePage.style.display = 'none';
                     playerContainer.style.display = 'block';
                     
+                    // 初始化访问统计
+                    initVisitStats();
+                    
                     // 显示浏览器提示（如果不是夸克浏览器）
                     const isQuark = navigator.userAgent.includes('Quark');
                     if (!isQuark && isMobile()) {
@@ -1170,6 +1383,48 @@
             
             libraryBtn.addEventListener('click', function() {
                 alert("音乐库功能正在开发中，敬请期待！");
+            });
+            
+            // 管理员面板事件
+            adminLoginBtn.addEventListener('click', function() {
+                const password = adminPassword.value;
+                if (verifyAdmin(password)) {
+                    adminLogin.style.display = 'none';
+                    showAdminPanel();
+                } else {
+                    alert('密码错误！');
+                }
+            });
+            
+            closeAdmin.addEventListener('click', function() {
+                adminPanel.style.display = 'none';
+            });
+            
+            // 添加隐藏的管理员入口（双击标题5次）
+            let clickCount = 0;
+            let lastClickTime = 0;
+            
+            document.querySelector('header h1').addEventListener('click', function() {
+                const currentTime = new Date().getTime();
+                if (currentTime - lastClickTime > 1000) {
+                    clickCount = 0;
+                }
+                
+                clickCount++;
+                lastClickTime = currentTime;
+                
+                if (clickCount >= 5) {
+                    showAdminLogin();
+                    clickCount = 0;
+                }
+            });
+            
+            // 或者使用键盘快捷键（Ctrl+Shift+A）
+            document.addEventListener('keydown', function(e) {
+                if (e.ctrlKey && e.shiftKey && e.key === 'A') {
+                    e.preventDefault();
+                    showAdminLogin();
+                }
             });
             
             // 初始化
